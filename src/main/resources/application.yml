@@ -1,0 +1,75 @@
+server:
+  port: ${SERVER_PORT:4000}
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: dropcode-backend
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/dropcode?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    username: ${DB_USER:dropcode}
+    password: ${DB_PASSWORD:dropcode_secret}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 15
+      minimum-idle: 5
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 20000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: 10GB
+      max-request-size: 10GB
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+dropcode:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173}
+  storage:
+    local-dir: ${STAGING_LOCAL_DIR:./staging-data}
+    s3-enabled: ${S3_ENABLED:false}
+    s3-bucket: ${S3_BUCKET:dropcode-staging-buffer}
+    s3-region: ${AWS_REGION:ap-south-1}
+  security:
+    staging-master-key: ${STAGING_MASTER_KEY:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+    code-pepper: ${CODE_PEPPER:dropcode-secure-code-pepper-key-minimum-32-chars-long}
+    ip-encryption-key: ${IP_ENCRYPTION_KEY:12345678901234567890123456789012}
+  firebase:
+    service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:}
+    project-id: ${FIREBASE_PROJECT_ID:dropcode-7568e}
+  razorpay:
+    key-id: ${RAZORPAY_KEY_ID:rzp_test_dropcode123}
+    key-secret: ${RAZORPAY_KEY_SECRET:test_secret_dropcode_456}
+    webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:test_webhook_dropcode_789}
+  limits:
+    code-ttl-seconds: 300
+    download-window-seconds: 900
+    max-code-attempts: 5
+    lockout-duration-seconds: 900
+    free-limit-bytes: 500000000
+    standard-limit-bytes: 5000000000
+    max-transfer-bytes: 10000000000
+    audit-retention-days: 90
