@@ -25,7 +25,7 @@ USER dropcode:dropcode
 COPY --from=build /app/target/dropcode-backend-1.0.0.jar app.jar
 
 # Render exposes PORT environment variable dynamically
-ENV PORT=4000
-EXPOSE 4000
+ENV PORT=10000
+EXPOSE 10000
 
 ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
