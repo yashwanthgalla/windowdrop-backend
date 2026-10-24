@@ -1,0 +1,9 @@
+target/
+staging-data/
+.git
+.gitignore
+.mvn
+mvnw
+mvnw.cmd
+*.log
+.DS_Store

@@ -1,5 +1,5 @@
 server:
-  port: ${SERVER_PORT:4000}
+  port: ${PORT:${SERVER_PORT:4000}}
   servlet:
     context-path: /
 
@@ -47,7 +47,7 @@ management:
 
 dropcode:
   cors:
-    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173}
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,https://windowdrop.vercel.app}
   storage:
     local-dir: ${STAGING_LOCAL_DIR:./staging-data}
     s3-enabled: ${S3_ENABLED:false}
