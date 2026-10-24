@@ -60,10 +60,6 @@ dropcode:
   firebase:
     service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:}
     project-id: ${FIREBASE_PROJECT_ID:dropcode-7568e}
-  razorpay:
-    key-id: ${RAZORPAY_KEY_ID:rzp_test_dropcode123}
-    key-secret: ${RAZORPAY_KEY_SECRET:test_secret_dropcode_456}
-    webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:test_webhook_dropcode_789}
   limits:
     code-ttl-seconds: 300
     download-window-seconds: 900

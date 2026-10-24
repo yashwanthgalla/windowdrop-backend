@@ -9,7 +9,6 @@ DropCode is an ephemeral, code-based file-transfer platform designed to prevent 
 - **Java 21 LTS**: Required (`java -version`).
 - **MySQL 8.0+**: Managed (e.g. AWS RDS, PlanetScale, Aiven, Render PostgreSQL/MySQL) or local native MySQL instance.
 - **Firebase Project**: Pre-configured Firebase Authentication (Project ID: `dropcode-7568e`).
-- **Razorpay Account**: Razorpay Key ID and Secret (or sandbox test credentials for development).
 
 ---
 
@@ -36,9 +35,6 @@ STAGING_LOCAL_DIR=./staging-data
 STAGING_MASTER_KEY=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
 CODE_PEPPER=dropcode-secure-code-pepper-key-minimum-32-chars-long
 IP_ENCRYPTION_KEY=12345678901234567890123456789012
-RAZORPAY_KEY_ID=rzp_test_dropcode123
-RAZORPAY_KEY_SECRET=test_secret_dropcode_456
-RAZORPAY_WEBHOOK_SECRET=test_webhook_dropcode_789
 ```
 
 ### Step 3.3: Build & Run with Maven
@@ -93,9 +89,6 @@ Set the following environment variables in the Render Dashboard:
 | `STAGING_MASTER_KEY` | 64-character hexadecimal encryption key |
 | `CODE_PEPPER` | Cryptographic pepper string (min 32 chars) |
 | `IP_ENCRYPTION_KEY` | 32-character encryption key for IP auditing |
-| `RAZORPAY_KEY_ID` | Live / Test Razorpay Key ID |
-| `RAZORPAY_KEY_SECRET` | Live / Test Razorpay Key Secret |
-| `RAZORPAY_WEBHOOK_SECRET` | Secret configured in Razorpay Webhook Dashboard |
 | `S3_ENABLED` | `false` for local staging buffer or `true` for private AWS S3 bucket |
 
 ---

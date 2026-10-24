@@ -13,7 +13,6 @@ public class DropcodeProperties {
     private Storage storage = new Storage();
     private Security security = new Security();
     private Firebase firebase = new Firebase();
-    private Razorpay razorpay = new Razorpay();
     private Limits limits = new Limits();
 
     @Data
@@ -40,13 +39,6 @@ public class DropcodeProperties {
     public static class Firebase {
         private String serviceAccountPath = "";
         private String projectId = "dropcode-7568e";
-    }
-
-    @Data
-    public static class Razorpay {
-        private String keyId = "rzp_test_dropcode123";
-        private String keySecret = "test_secret_dropcode_456";
-        private String webhookSecret = "test_webhook_dropcode_789";
     }
 
     @Data

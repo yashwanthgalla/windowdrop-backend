@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Billing & Subscriptions", description = "Plan pricing, entitlement check, and Razorpay payment checkout")
+@Tag(name = "Billing & Subscriptions", description = "Plan pricing, entitlement check, and subscription checkout")
 public class BillingController {
 
     private final SubscriptionService subscriptionService;
@@ -30,13 +30,13 @@ public class BillingController {
     }
 
     @PostMapping({"/api/v1/billing/orders", "/api/v1/subscriptions/checkout"})
-    @Operation(summary = "Create Razorpay payment order for subscription upgrade")
+    @Operation(summary = "Create payment order for subscription upgrade")
     public ResponseEntity<BillingDtos.OrderResponse> createOrder(@RequestBody BillingDtos.CreateOrderRequest request) {
         return ResponseEntity.ok(paymentService.createOrder(request));
     }
 
     @PostMapping("/api/v1/billing/verify")
-    @Operation(summary = "Verify Razorpay payment signature and activate 1-year entitlement")
+    @Operation(summary = "Verify payment order and activate 1-year entitlement")
     public ResponseEntity<BillingDtos.VerifyOrderResponse> verifyOrder(@RequestBody BillingDtos.VerifyOrderRequest request) {
         return ResponseEntity.ok(paymentService.verifyPayment(request));
     }

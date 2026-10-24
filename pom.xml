@@ -21,7 +21,6 @@
 		<lombok.version>1.18.34</lombok.version>
 		<springdoc.version>2.6.0</springdoc.version>
 		<firebase-admin.version>9.3.0</firebase-admin.version>
-		<razorpay.version>1.4.4</razorpay.version>
 		<aws-sdk.version>2.25.5</aws-sdk.version>
 	</properties>
 
@@ -95,18 +94,6 @@
 			</exclusions>
 		</dependency>
 
-		<!-- Razorpay Java SDK for Indian INR Payments -->
-		<dependency>
-			<groupId>com.razorpay</groupId>
-			<artifactId>razorpay-java</artifactId>
-			<version>${razorpay.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 
 		<!-- AWS SDK for Java v2 (S3) -->
 		<dependency>

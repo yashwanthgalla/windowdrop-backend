@@ -30,7 +30,7 @@ public class PaymentEntity {
 
     @Column(name = "provider", nullable = false, length = 32)
     @Builder.Default
-    private String provider = "RAZORPAY";
+    private String provider = "DIRECT";
 
     @Column(name = "provider_order_id", nullable = false, unique = true, length = 128)
     private String providerOrderId;
@@ -65,7 +65,7 @@ public class PaymentEntity {
         if (createdAt == null) createdAt = Instant.now();
         if (paymentStatus == null) paymentStatus = "PENDING";
         if (currency == null) currency = "INR";
-        if (provider == null) provider = "RAZORPAY";
+        if (provider == null) provider = "DIRECT";
         if (providerSignatureVerified == null) providerSignatureVerified = false;
     }
 }

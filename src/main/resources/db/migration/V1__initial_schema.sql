@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS payments (
     user_id BIGINT NOT NULL,
     subscription_id BIGINT NULL,
     plan_code VARCHAR(32) NOT NULL,
-    provider VARCHAR(32) NOT NULL DEFAULT 'RAZORPAY',
+    provider VARCHAR(32) NOT NULL DEFAULT 'DIRECT',
     provider_order_id VARCHAR(128) NOT NULL UNIQUE,
     provider_payment_id VARCHAR(128) NULL,
     amount_paise BIGINT NOT NULL,

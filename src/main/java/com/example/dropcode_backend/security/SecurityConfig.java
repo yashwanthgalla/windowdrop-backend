@@ -73,8 +73,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/receive/*/zip").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/receive/*").permitAll()
 
-                        // Razorpay webhooks
-                        .requestMatchers(HttpMethod.POST, "/api/v1/webhooks/**").permitAll()
 
                         // All authenticated user resources
                         .requestMatchers("/api/v1/profile/**", "/api/v1/users/me").authenticated()

@@ -11,8 +11,6 @@ import com.example.dropcode_backend.repository.SubscriptionPlanRepository;
 import com.example.dropcode_backend.service.PaymentService;
 import com.example.dropcode_backend.service.SubscriptionService;
 import com.example.dropcode_backend.service.UserService;
-import com.example.dropcode_backend.util.CryptoUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,13 +18,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Instant;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,11 +34,6 @@ class PaymentAndWebhookTest {
     @Mock private UserService userService;
 
     private PaymentService paymentService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    private final String KEY_ID = "rzp_test_dropcode123";
-    private final String KEY_SECRET = "test_secret_dropcode_456";
-    private final String WEBHOOK_SECRET = "test_webhook_dropcode_789";
 
     @BeforeEach
     void setUp() {
@@ -50,12 +41,8 @@ class PaymentAndWebhookTest {
                 paymentRepository,
                 planRepository,
                 subscriptionService,
-                userService,
-                objectMapper
+                userService
         );
-        ReflectionTestUtils.setField(paymentService, "razorpayKeyId", KEY_ID);
-        ReflectionTestUtils.setField(paymentService, "razorpayKeySecret", KEY_SECRET);
-        ReflectionTestUtils.setField(paymentService, "razorpayWebhookSecret", WEBHOOK_SECRET);
     }
 
     @Test
@@ -87,15 +74,14 @@ class PaymentAndWebhookTest {
         PaymentEntity saved = captor.getValue();
         assertEquals("PENDING", saved.getPaymentStatus());
         assertEquals(4900L, saved.getAmountPaise());
-        assertEquals("RAZORPAY", saved.getProvider());
+        assertEquals("DIRECT", saved.getProvider());
     }
 
     @Test
-    @DisplayName("Valid payment signature activates subscription")
-    void testVerifyPaymentValidSignature() {
+    @DisplayName("Verify payment order activates subscription entitlement")
+    void testVerifyPaymentOrder() {
         UserEntity user = UserEntity.builder().id(2L).build();
         String orderId = "order_test_12345";
-        String paymentId = "pay_test_67890";
 
         PaymentEntity pendingPayment = PaymentEntity.builder()
                 .id(10L)
@@ -107,9 +93,6 @@ class PaymentAndWebhookTest {
                 .build();
 
         when(paymentRepository.findByProviderOrderId(orderId)).thenReturn(Optional.of(pendingPayment));
-
-        String payload = orderId + "|" + paymentId;
-        String validSignature = CryptoUtils.hmacSha256(payload, KEY_SECRET);
 
         SubscriptionPlanEntity proPlan = SubscriptionPlanEntity.builder()
                 .planCode("large")
@@ -130,9 +113,6 @@ class PaymentAndWebhookTest {
 
         BillingDtos.VerifyOrderRequest verifyReq = BillingDtos.VerifyOrderRequest.builder()
                 .orderId(orderId)
-                .razorpayOrderId(orderId)
-                .razorpayPaymentId(paymentId)
-                .razorpaySignature(validSignature)
                 .build();
 
         BillingDtos.VerifyOrderResponse res = paymentService.verifyPayment(verifyReq);
@@ -145,34 +125,25 @@ class PaymentAndWebhookTest {
     }
 
     @Test
-    @DisplayName("Invalid payment signature fails and throws ApiException")
-    void testVerifyPaymentInvalidSignature() {
-        String orderId = "order_test_99999";
-        PaymentEntity pendingPayment = PaymentEntity.builder()
-                .id(20L)
-                .providerOrderId(orderId)
-                .paymentStatus("PENDING")
-                .build();
-
-        when(paymentRepository.findByProviderOrderId(orderId)).thenReturn(Optional.of(pendingPayment));
+    @DisplayName("Unknown order ID throws NOT_FOUND ApiException")
+    void testVerifyPaymentOrderNotFound() {
+        String orderId = "order_unknown_99999";
+        when(paymentRepository.findByProviderOrderId(orderId)).thenReturn(Optional.empty());
 
         BillingDtos.VerifyOrderRequest verifyReq = BillingDtos.VerifyOrderRequest.builder()
                 .orderId(orderId)
-                .razorpayOrderId(orderId)
-                .razorpayPaymentId("pay_tampered_111")
-                .razorpaySignature("invalid_signature_hex_data")
                 .build();
 
         assertThrows(ApiException.class, () -> paymentService.verifyPayment(verifyReq));
-        assertEquals("FAILED", pendingPayment.getPaymentStatus());
     }
 
     @Test
-    @DisplayName("Webhook with invalid signature is rejected with 401")
-    void testWebhookInvalidSignature() {
-        String payload = "{\"event\":\"order.paid\"}";
-        String invalidSig = "bad_signature";
+    @DisplayName("Empty order ID throws INVALID_ORDER ApiException")
+    void testVerifyPaymentMissingOrderId() {
+        BillingDtos.VerifyOrderRequest verifyReq = BillingDtos.VerifyOrderRequest.builder()
+                .orderId("")
+                .build();
 
-        assertThrows(ApiException.class, () -> paymentService.handleRazorpayWebhook(payload, invalidSig));
+        assertThrows(ApiException.class, () -> paymentService.verifyPayment(verifyReq));
     }
 }

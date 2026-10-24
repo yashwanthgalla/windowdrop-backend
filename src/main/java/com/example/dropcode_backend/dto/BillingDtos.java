@@ -62,8 +62,6 @@ public class BillingDtos {
         private String planCode;
         private String cfOrderId;
         private String environment; // 'sandbox' | 'production'
-        private String razorpayOrderId;
-        private String razorpayKeyId;
         private String currency;
     }
 
@@ -73,9 +71,6 @@ public class BillingDtos {
     @Builder
     public static class VerifyOrderRequest {
         private String orderId;
-        private String razorpayOrderId;
-        private String razorpayPaymentId;
-        private String razorpaySignature;
     }
 
     @Data
