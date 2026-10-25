@@ -25,7 +25,7 @@ public class HealthCheckController {
     }
 
     @GetMapping("/readyz")
-    @Operation(summary = "Readiness probe: validates MySQL connectivity")
+    @Operation(summary = "Readiness probe: validates database connectivity")
     public ResponseEntity<Map<String, Object>> readyz() {
         boolean dbOk = false;
         try (Connection conn = dataSource.getConnection()) {

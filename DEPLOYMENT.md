@@ -1,35 +1,30 @@
 # DropCode — Backend Deployment & Operations Guide
 
 ## 1. Overview
-DropCode is an ephemeral, code-based file-transfer platform designed to prevent permanent file storage while maintaining comprehensive audit, history, subscription, and payment transaction persistence in MySQL.
+DropCode is an ephemeral, code-based file-transfer platform designed to prevent permanent file storage while maintaining comprehensive audit, history, subscription, and payment transaction persistence in PostgreSQL / Supabase.
 
 ---
 
 ## 2. Prerequisites
 - **Java 21 LTS**: Required (`java -version`).
-- **MySQL 8.0+**: Managed (e.g. AWS RDS, PlanetScale, Aiven, Render PostgreSQL/MySQL) or local native MySQL instance.
+- **PostgreSQL 15+ / Supabase**: Supabase Managed Database or local PostgreSQL instance.
 - **Firebase Project**: Pre-configured Firebase Authentication (Project ID: `dropcode-7568e`).
 
 ---
 
 ## 3. Local Setup & Execution
 
-### Step 3.1: MySQL Database Initialization
-Run the following SQL commands in MySQL 8:
-```sql
-CREATE DATABASE IF NOT EXISTS dropcode CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER IF NOT EXISTS 'dropcode'@'%' IDENTIFIED BY 'dropcode_secret';
-GRANT ALL PRIVILEGES ON dropcode.* TO 'dropcode'@'%';
-FLUSH PRIVILEGES;
-```
+### Step 3.1: PostgreSQL / Supabase Database
+In Supabase:
+Create a new Supabase project or use an existing one. Tables and initial indexes will be migrated automatically by Flyway on application startup.
 
 ### Step 3.2: Environment Configuration
 Copy `.env.example` to `.env` or set environment variables:
 ```bash
 SERVER_PORT=4000
-DB_URL=jdbc:mysql://localhost:3306/dropcode?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-DB_USER=dropcode
-DB_PASSWORD=dropcode_secret
+DB_URL=jdbc:postgresql://db.[PROJECT-REF].supabase.co:5432/postgres?sslmode=require
+DB_USER=postgres
+DB_PASSWORD=[YOUR-PASSWORD]
 CORS_ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
 STAGING_LOCAL_DIR=./staging-data
 STAGING_MASTER_KEY=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
@@ -82,9 +77,9 @@ Set the following environment variables in the Render Dashboard:
 | Key | Value / Description |
 |---|---|
 | `SERVER_PORT` | `4000` (or `$PORT`) |
-| `DB_URL` | Cloud MySQL JDBC URL (e.g. `jdbc:mysql://<host>:3306/<database>?useSSL=true`) |
-| `DB_USER` | Cloud MySQL username |
-| `DB_PASSWORD` | Cloud MySQL password |
+| `DB_URL` | Cloud PostgreSQL / Supabase JDBC URL (e.g. `jdbc:postgresql://db.<project-ref>.supabase.co:5432/postgres?sslmode=require`) |
+| `DB_USER` | Supabase DB username (typically `postgres` or `postgres.<project-ref>`) |
+| `DB_PASSWORD` | Supabase DB password |
 | `CORS_ALLOWED_ORIGINS` | Production frontend domain (e.g. `https://dropcode.yourdomain.com`) |
 | `STAGING_MASTER_KEY` | 64-character hexadecimal encryption key |
 | `CODE_PEPPER` | Cryptographic pepper string (min 32 chars) |
